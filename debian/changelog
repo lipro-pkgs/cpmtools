@@ -1,0 +1,21 @@
+cpmtools (2.1-1) unstable; urgency=low
+
+  * new upstream version, closes: #239681
+  * deliver cpm.5 manpage in binary package, closes: #239680
+  * add autotools-dev as a build dep to keep config.* fresh
+  * move diskdefs into /etc/cpmtools as a conffile, closes: #239677
+
+ -- Bdale Garbee <bdale@gag.com>  Fri, 26 Mar 2004 11:48:01 -0700
+
+cpmtools (2.0-2) unstable; urgency=low
+
+  * add build-depend on libncurses-dev so that fsed builds, closes: #129679
+
+ -- Bdale Garbee <bdale@gag.com>  Fri, 18 Jan 2002 11:50:16 -0700
+
+cpmtools (2.0-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Bdale Garbee <bdale@gag.com>  Tue, 15 Jan 2002 02:23:43 -0700
+

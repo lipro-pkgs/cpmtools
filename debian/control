@@ -1,0 +1,15 @@
+Source: cpmtools
+Section: otherosfs
+Priority: optional
+Maintainer: Bdale Garbee <bdale@gag.com>
+Build-Depends: debhelper (>> 3.0.0), libncurses-dev, autotools-dev
+Standards-Version: 3.6.1.0
+
+Package: cpmtools
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Tools to access CP/M file systems
+ This package allows to access CP/M file systems similar to the well-known 
+ mtools package, which accesses MSDOS file systems.
+ .
+ All CP/M file system features are supported.
