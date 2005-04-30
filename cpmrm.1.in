@@ -4,7 +4,7 @@ cpmrm \- remove files on CP/M disks
 .\"}}}
 .SH SYNOPSIS \"{{{
 .ad l
-.B cpmera
+.B cpmrm
 .RB [ \-f
 .IR format ]
 .I image
@@ -13,7 +13,7 @@ cpmrm \- remove files on CP/M disks
 .ad b
 .\"}}}
 .SH DESCRIPTION \"{{{
-\fBcpmera\fP removes files from CP/M disks.
+\fBcpmrm\fP removes files from CP/M disks.
 .\"}}}
 .SH OPTIONS \"{{{
 .IP "\fB\-f\fP \fIformat\fP"

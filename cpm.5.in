@@ -88,7 +88,7 @@ meaning:
 .sp
 F0: requires set wheel byte (Backgrounder II)
 .br
-F1: public file (P2DOS, ZSDOS), forground-only command (Backgrounder II)
+F1: public file (P2DOS, ZSDOS), foreground-only command (Backgrounder II)
 .br
 F2: date stamp (ZSDOS), background-only commands (Backgrounder II)
 .br
@@ -138,7 +138,7 @@ Bc stores the number of bytes in the last used record.  The value 0 means
 Al is interpreted as 16 byte-values, otherwise as 8 double-byte-values.
 A block pointer of 0 marks a hole in the file.  If a hole
 covers the range of a full extent, the extent will not be allocated.  In particular,
-the first extent of a file does not neccessarily have extent number 0.
+the first extent of a file does not necessarily have extent number 0.
 A file may not share blocks with other files, as its blocks would be freed
 if the other files is erased without a following disk system reset.  CP/M returns
 EOF when it reaches a hole, whereas UNIX returns zero-value bytes, which makes
