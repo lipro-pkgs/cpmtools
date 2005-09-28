@@ -3,7 +3,7 @@ Section: otherosfs
 Priority: optional
 Maintainer: Bdale Garbee <bdale@gag.com>
 Build-Depends: debhelper (>> 3.0.0), libncurses-dev, autotools-dev
-Standards-Version: 3.6.1.0
+Standards-Version: 3.6.2.1
 
 Package: cpmtools
 Architecture: any

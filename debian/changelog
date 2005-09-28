@@ -1,3 +1,9 @@
+cpmtools (2.4-3) unstable; urgency=low
+
+  * patch from A Costa for fsck man page typos, closes: #327918
+
+ -- Bdale Garbee <bdale@gag.com>  Wed, 28 Sep 2005 00:53:52 -0600
+
 cpmtools (2.4-2) unstable; urgency=low
 
   * accept patches from A Costa for man page typos, closes: #305635, #305636
