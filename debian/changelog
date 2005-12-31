@@ -1,3 +1,10 @@
+cpmtools (2.5-1) unstable; urgency=low
+
+  * new upstream version, closes: #345395
+  * freshen policy and debhelper version
+
+ -- Bdale Garbee <bdale@gag.com>  Fri, 30 Dec 2005 21:20:27 -0700
+
 cpmtools (2.4-3) unstable; urgency=low
 
   * patch from A Costa for fsck man page typos, closes: #327918
