@@ -1,0 +1,5 @@
+Changes since 2.0:
+
+o  Epson QX10 format added to diskdefs
+o  Extent computation fixed for blocksizes <= 1k and disk sizes >= 256 k
+o  Support for current libdsk
