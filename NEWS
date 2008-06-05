@@ -1,5 +1,4 @@
-Changes since 2.4:
+Changes since 2.6:
 
-o  diskdefs entry for P112a
-o  small bugs in fsed.cpm fixed
-
+o  off by one bug in cpmfs.c fixed
+o  GPL 3
