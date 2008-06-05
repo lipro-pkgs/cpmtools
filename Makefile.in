@@ -87,7 +87,8 @@ install:	all
 		$(INSTALL) -s -m 755 mkfs.cpm $(BINDIR)/mkfs.cpm
 		$(INSTALL) -s -m 755 fsck.cpm $(BINDIR)/fsck.cpm
 		$(INSTALL) -s -m 755 fsed.cpm $(BINDIR)/fsed.cpm
-		$(INSTALL_DATA) diskdefs @datarootdir@/diskdefs
+		# a little ugly... we know prefix for Debian is /usr, so...
+		$(INSTALL_DATA) diskdefs $(prefix)/../@datarootdir@/diskdefs
 		$(INSTALL_DATA) cpmls.1 $(MANDIR)/man1/cpmls.1
 		$(INSTALL_DATA) cpmcp.1 $(MANDIR)/man1/cpmcp.1
 		$(INSTALL_DATA) cpmrm.1 $(MANDIR)/man1/cpmrm.1
