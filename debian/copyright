@@ -7,16 +7,19 @@ Upstream Author: Michael Haardt <michael@moria.de>
 
 Copyright:
 
-  Copyright 1997, 1998, 1999, 2000, 2001 Michael Haardt <michael@moria.de>
+  Copyright 1997-2007 Michael Haardt <michael@moria.de>
 
   The Windows port is copyright 2000, 2001 John Elliott
 
   The getopt.[ch] and getopt1.c files are
     Copyright (C) 1989,90,91,92,93,94,96,97,98 Free Software Foundation, Inc.
 
+  The install.sh file is Copyright (C) 1994 X Consortium
+
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation; version 2 dated June, 1991.
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
 
 On Debian GNU/Linux systems, the complete text of the GNU General Public 
 License can be found in the `/usr/share/common-licenses' directory.

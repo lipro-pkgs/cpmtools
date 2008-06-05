@@ -231,6 +231,7 @@ diskdef p112
   tracks 160
   sectrk 18
   blocksize 2048
+<<<<<<< HEAD:diskdefs
   maxdir 128
   skew 1
   boottrk 1
@@ -239,12 +240,39 @@ end
 
 
 diskdef p112a
+=======
+  maxdir 256
+  skew 1
+  boottrk 2
+  os 3
+end
+
+diskdef p112-old
+>>>>>>> 224b4e6d27a3af235500d9d8028ddbd3a60af7ed:diskdefs
   seclen 512
   tracks 160
   sectrk 18
   blocksize 2048
+<<<<<<< HEAD:diskdefs
   maxdir 256
+=======
+  maxdir 128
+>>>>>>> 224b4e6d27a3af235500d9d8028ddbd3a60af7ed:diskdefs
   skew 1
   boottrk 1
   os 3
 end
+<<<<<<< HEAD:diskdefs
+=======
+
+diskdef kpii
+  seclen 512
+  tracks 40
+  sectrk 10
+  blocksize 1024
+  maxdir 32
+  skew 0
+  boottrk 1
+  os 2.2
+end
+>>>>>>> 224b4e6d27a3af235500d9d8028ddbd3a60af7ed:diskdefs
