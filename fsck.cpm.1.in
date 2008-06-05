@@ -1,5 +1,5 @@
 .TH FSCK.CPM 1 "@UPDATED@" "CP/M tools" "User commands"
-.SH NAME ..\"{{{roff}}}\"{{{
+.SH NAME \"{{{roff}}}\"{{{
 fsck.cpm \- check a CP/M file system
 .\"}}}
 .SH SYNOPSIS .\"{{{
