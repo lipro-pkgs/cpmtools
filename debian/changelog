@@ -1,8 +1,8 @@
-cpmtools (2.10-1) UNRELEASED; urgency=low
+cpmtools (2.10-1) unstable; urgency=low
 
   * new upstream version
 
- -- Bdale Garbee <bdale@gag.com>  Tue, 08 Sep 2009 12:34:09 -0600
+ -- Bdale Garbee <bdale@gag.com>  Tue, 08 Sep 2009 12:52:46 -0600
 
 cpmtools (2.7-1) unstable; urgency=low
 
