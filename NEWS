@@ -1,4 +1,3 @@
-Changes since 2.6:
+Changes since 2.9:
 
-o  off by one bug in cpmfs.c fixed
-o  GPL 3
+o  New diskdefs entry for Robotron 1715 with SCP3

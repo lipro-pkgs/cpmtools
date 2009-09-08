@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#include "getopt.h"
+#include "getopt_.h"
 #include "cpmdir.h"
 #include "cpmfs.h"
 
@@ -588,7 +588,7 @@ int main(int argc, char *argv[])
   }
 
   if (optind!=(argc-1)) usage=1;
-  else image=argv[optind];
+  else image=argv[optind++];
 
   if (usage)
   {
