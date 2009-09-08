@@ -119,6 +119,81 @@ static int isMatching(int user1, const char *name1, const char *ext1, int user2,
 }
 /*}}}*/
 
+/* time conversions */
+/* cpm2unix_time      -- convert CP/M time to UTC                */ /*{{{*/
+static time_t cpm2unix_time(int days, int hour, int min)
+{
+  /* CP/M stores timestamps in local time.  We don't know which     */
+  /* timezone was used and if DST was in effect.  Assuming it was   */
+  /* the current offset from UTC is most sensible, but not perfect. */
+
+  int year,days_per_year;
+  static int days_per_month[]={31,0,31,30,31,30,31,31,30,31,30,31};
+  char **old_environ;
+  static char gmt0[]="TZ=GMT0";
+  static char *gmt_env[]={ gmt0, (char*)0 };
+  struct tm tms;
+  time_t lt,t;
+
+  time(&lt);
+  t=lt;
+  tms=*localtime(&lt);
+  old_environ=environ;
+  environ=gmt_env;
+  lt=mktime(&tms);
+  lt-=t;
+  tms.tm_sec=0;
+  tms.tm_min=((min>>4)&0xf)*10+(min&0xf);
+  tms.tm_hour=((hour>>4)&0xf)*10+(hour&0xf);
+  tms.tm_mday=1;
+  tms.tm_mon=0;
+  tms.tm_year=78;
+  tms.tm_isdst=-1;
+  for (;;)
+  {
+    year=tms.tm_year+1900;
+    days_per_year=((year%4)==0 && ((year%100) || (year%400)==0)) ? 366 : 365;
+    if (days>days_per_year)
+    {
+      days-=days_per_year;
+      ++tms.tm_year;
+    }
+    else break;
+  }
+  for (;;)
+  {
+    days_per_month[1]=(days_per_year==366) ? 29 : 28;
+    if (days>days_per_month[tms.tm_mon])
+    {
+      days-=days_per_month[tms.tm_mon];
+      ++tms.tm_mon;
+    }
+    else break;
+  }
+  t=mktime(&tms)+(days-1)*24*3600;
+  environ=old_environ;
+  t-=lt;
+  return t;
+}
+/*}}}*/
+/* unix2cpm_time      -- convert UTC to CP/M time                */ /*{{{*/
+static void unix2cpm_time(time_t now, int *days, int *hour, int *min) 
+{
+  struct tm *tms;
+  int i;
+
+  tms=localtime(&now);
+  *min=((tms->tm_min/10)<<4)|(tms->tm_min%10);
+  *hour=((tms->tm_hour/10)<<4)|(tms->tm_hour%10);
+  for (i=1978,*days=0; i<1900+tms->tm_year; ++i)
+  {
+    *days+=365;
+    if (i%4==0 && (i%100!=0 || i%400==0)) ++*days;
+  }
+  *days += tms->tm_yday+1;
+}
+/*}}}*/
+
 /* allocation vector bitmap functions */
 /* alvInit            -- init allocation vector                  */ /*{{{*/
 static void alvInit(const struct cpmSuperBlock *d)
@@ -143,7 +218,7 @@ static void alvInit(const struct cpmSuperBlock *d)
       {
         block=(unsigned char)d->dir[i].pointers[j];
         if (d->size>=256) block+=(((unsigned char)d->dir[i].pointers[++j])<<8);
-        if (block)
+        if (block && block<d->size)
         {
 #ifdef CPMFS_DEBUG
           fprintf(stderr,"alvInit: allocate block %d\n",block);
@@ -310,7 +385,6 @@ static int findFreeExtent(const struct cpmSuperBlock *drive)
 static void updateTimeStamps(const struct cpmInode *ino, int extent)
 {
   struct PhysDirectoryEntry *date;
-  struct tm *t;
   int i;
   int ca_min,ca_hour,ca_days,u_min,u_hour,u_days;
 
@@ -318,28 +392,8 @@ static void updateTimeStamps(const struct cpmInode *ino, int extent)
 #ifdef CPMFS_DEBUG
   fprintf(stderr,"CPMFS: updating time stamps for inode %d (%d)\n",extent,extent&3);
 #endif
-  /* compute ctime/atime */ /*{{{*/
-    t=localtime(ino->sb->cnotatime ? &ino->ctime : &ino->atime);
-    ca_min=((t->tm_min/10)<<4)|(t->tm_min%10);
-    ca_hour=((t->tm_hour/10)<<4)|(t->tm_hour%10);
-    for (i=1978,ca_days=0; i < 1900 + t->tm_year; ++i)
-    {
-      ca_days+=365;
-      if (i%4==0 && (i%100!=0 || i%400==0)) ++ca_days;
-    }
-    ca_days += t->tm_yday + 1;
-    /*}}}*/
-  /* compute mtime */ /*{{{*/
-    t=localtime(&ino->mtime);
-    u_min=((t->tm_min/10)<<4)|(t->tm_min%10);
-    u_hour=((t->tm_hour/10)<<4)|(t->tm_hour%10);
-    for (i=1978,u_days=0; i < 1900 + t->tm_year; ++i)
-    {
-      u_days+=365;
-      if (i%4==0 && (i%100!=0 || i%400==0)) ++u_days;
-    }
-    u_days += t->tm_yday + 1;
-    /*}}}*/
+  unix2cpm_time(ino->sb->cnotatime ? ino->ctime : ino->atime,&ca_days,&ca_hour,&ca_min);
+  unix2cpm_time(ino->mtime,&u_days,&u_hour,&u_min);
   if ((ino->sb->type==CPMFS_P2DOS || ino->sb->type==CPMFS_DR3) && (date=ino->sb->dir+(extent|3))->status==0x21)
   {
     switch (extent&3)
@@ -427,6 +481,11 @@ static int diskdefReadSuper(struct cpmSuperBlock *d, const char *format)
           else if (strcmp(argv[1],"3")==0) d->type=CPMFS_DR3;
           else if (strcmp(argv[1],"p2dos")==0) d->type=CPMFS_P2DOS;
         }
+      }
+      else if (argc>0 && argv[0][0]!='#')
+      {
+        fprintf(stderr,"%s: invalid keyword `%s'\n",cmd,argv[0]);
+        exit(1);
       }
     }
     else if (argc==2 && strcmp(argv[0],"diskdef")==0)
@@ -521,7 +580,7 @@ static int recmatch(const char *a, const char *pattern)
         if (*a) { ++a; ++pattern; } else return 0;
         break;
       }
-      default: if (*a==*pattern) { ++a; ++pattern; } else return 0;
+      default: if (tolower(*a)==tolower(*pattern)) { ++a; ++pattern; } else return 0;
     }
     first=0;
   }
@@ -562,17 +621,35 @@ void cpmglob(int optin, int argc, char * const argv[], struct cpmInode *root, in
     ++entries;
     if (entries==dirsize) dirent=realloc(dirent,sizeof(struct cpmDirent)*(dirsize*=2));
   }
-
   for (i=optin; i<argc; ++i)
   {
-    for (j=0; j<entries; ++j)
+    int found;
+
+    for (j=0,found=0; j<entries; ++j)
     {
       if (match(dirent[j].name,argv[i]))
       {
         if (*gargc==gargcap) *gargv=realloc(*gargv,sizeof(char*)*(gargcap ? (gargcap*=2) : (gargcap=16)));
         (*gargv)[*gargc]=strcpy(malloc(strlen(dirent[j].name)+1),dirent[j].name);
         ++*gargc;
+        ++found;
       }
+    }
+    if (found==0)
+    {
+      char pat[255];
+      char *pattern=argv[i];
+      int user;
+
+      if (isdigit(*pattern) && *(pattern+1)==':') { user=(*pattern-'0'); pattern+=2; }
+      else if (isdigit(*pattern) && isdigit(*(pattern+1)) && *(pattern+2)==':') { user=(10*(*pattern-'0')+(*(pattern+1)-'0')); pattern+=3; }
+      else user=-1;
+      if (user==-1) sprintf(pat,"??%s",pattern);
+      else sprintf(pat,"%02d%s",user,pattern);
+
+      if (*gargc==gargcap) *gargv=realloc(*gargv,sizeof(char*)*(gargcap ? (gargcap*=2) : (gargcap=16)));
+      (*gargv)[*gargc]=strcpy(malloc(strlen(pat)+1),pat);
+      ++*gargc;
     }
   }
   free(dirent);
@@ -736,9 +813,6 @@ int cpmNamei(const struct cpmInode *dir, const char *filename, struct cpmInode *
   int user;
   char name[8],extension[3];
   struct PhysDirectoryEntry *date;
-  char **old_environ;
-  static char gmt0[]="TZ=GMT0";
-  static char *gmt_env[]={ gmt0, (char*)0 };
   int highestExtno,highestExt=-1,lowestExtno,lowestExt=-1;
   int protectMode=0;
   /*}}}*/
@@ -826,19 +900,16 @@ int cpmNamei(const struct cpmInode *dir, const char *filename, struct cpmInode *
   i->ino=lowestExt;
   i->mode=s_ifreg;
   i->sb=dir->sb;
-  old_environ=environ;
-  environ=gmt_env; /* for mktime() */
+  /* set timestamps */ /*{{{*/
   if 
   (
     (dir->sb->type==CPMFS_P2DOS || dir->sb->type==CPMFS_DR3)
     && (date=dir->sb->dir+(lowestExt|3))->status==0x21
   )
-  /* set time stamps */ /*{{{*/
   {
     /* variables */ /*{{{*/
     int u_days=0,u_hour=0,u_min=0;
     int ca_days=0,ca_hour=0,ca_min=0;
-    struct tm tms;
     /*}}}*/
 
     switch (lowestExt&3)
@@ -880,32 +951,20 @@ int cpmNamei(const struct cpmInode *dir, const char *filename, struct cpmInode *
       }
       /*}}}*/
     }
-    /* compute CP/M to UNIX time format */ /*{{{*/
-    tms.tm_sec=0;
-    tms.tm_min=((ca_min>>4)&0xf)*10+(ca_min&0xf);
-    tms.tm_hour=((ca_hour>>4)&0xf)*10+(ca_hour&0xf);
-    tms.tm_mday=1;
-    tms.tm_mon=0;
-    tms.tm_year=78;
-    tms.tm_isdst=-1;
     if (i->sb->cnotatime)
     {
-      i->ctime=mktime(&tms)+(ca_days-1)*24*3600;
+      i->ctime=cpm2unix_time(ca_days,ca_hour,ca_min);
       i->atime=0;
     }
     else
     {
       i->ctime=0;
-      i->atime=mktime(&tms)+(ca_days-1)*24*3600;
+      i->atime=cpm2unix_time(ca_days,ca_hour,ca_min);
     }
-    tms.tm_min=((u_min>>4)&0xf)*10+(u_min&0xf);
-    tms.tm_hour=((u_hour>>4)&0xf)*10+(u_hour&0xf);
-    i->mtime=mktime(&tms)+(u_days-1)*24*3600;
-    /*}}}*/
+    i->mtime=cpm2unix_time(u_days,u_hour,u_min);
   }
-  /*}}}*/
   else i->atime=i->mtime=i->ctime=0;
-  environ=old_environ;
+  /*}}}*/
 
   /* Determine the inode attributes */
   i->attr = 0;
@@ -1265,46 +1324,19 @@ int cpmRead(struct cpmFile *file, char *buf, int count)
 /* cpmWrite           -- write                                   */ /*{{{*/
 int cpmWrite(struct cpmFile *file, const char *buf, int count)
 {
-  int findext=1,findblock=1,extent=-1,extentno=-1,got=0,nextblockpos=-1,nextextpos=-1;
+  int findext=1,findblock=-1,extent=-1,extentno=-1,got=0,nextblockpos=-1,nextextpos=-1;
   int blocksize=file->ino->sb->blksiz;
   int extcap=(file->ino->sb->size<256 ? 16 : 8)*blocksize;
-  int block=-1,start=-1,end=-1,ptr=-1;
+  int block=-1,start=-1,end=-1,ptr=-1,last=-1;
   char buffer[16384];
 
   while (count>0)
   {
-    if (findext)
+    if (findext) /*{{{*/
     {
       extentno=file->pos/16384;
       extent=findFileExtent(file->ino->sb,file->ino->sb->dir[file->ino->ino].status,file->ino->sb->dir[file->ino->ino].name,file->ino->sb->dir[file->ino->ino].ext,0,extentno);
       nextextpos=(file->pos/extcap)*extcap+extcap;
-      findext=0;
-      findblock=1;
-      updateTimeStamps(file->ino,extent);
-    }
-    if (findblock)
-    {
-      if (start!=-1)
-      {
-        int last;
-    
-        last=writeBlock(file->ino->sb,block,buffer,start,end);
-        if (file->ino->sb->size<256) for (last=15; last>=ptr; --last)
-        {
-          if (file->ino->sb->dir[extent].pointers[last]) break;
-        }
-        else for (last=14; last>=ptr; last-=2)
-        {
-          if (file->ino->sb->dir[extent].pointers[last] || file->ino->sb->dir[extent].pointers[last+1]) break;
-        }
-        if (last==ptr) /* we wrote the last used block of this extent */
-        {
-          file->ino->sb->dir[extent].extnol=EXTENTL((file->pos-1)/16384);
-          file->ino->sb->dir[extent].extnoh=EXTENTH((file->pos-1)/16384);
-          file->ino->sb->dir[extent].blkcnt=((file->pos-1)%16384)/128+1;
-          file->ino->sb->dir[extent].lrc=file->pos%128;
-        }
-      }
       if (extent==-1)
       {
         if ((extent=findFreeExtent(file->ino->sb))==-1) return (got==0 ? -1 : got);
@@ -1314,12 +1346,19 @@ int cpmWrite(struct cpmFile *file, const char *buf, int count)
         file->ino->sb->dir[extent].extnoh=EXTENTH(extentno);
         file->ino->sb->dir[extent].blkcnt=0;
         file->ino->sb->dir[extent].lrc=0;
+        updateTimeStamps(file->ino,extent);
       }
+      findext=0;
+      findblock=1;
+    }
+    /*}}}*/
+    if (findblock) /*{{{*/
+    {
       ptr=(file->pos%extcap)/blocksize;
       if (file->ino->sb->size>=256) ptr*=2;
       block=(unsigned char)file->ino->sb->dir[extent].pointers[ptr];
       if (file->ino->sb->size>=256) block+=((unsigned char)file->ino->sb->dir[extent].pointers[ptr+1])<<8;
-      if (block==0)
+      if (block==0) /* allocate new block, set start/end to cover it */ /*{{{*/
       {
         if ((block=allocBlock(file->ino->sb))==-1) return (got==0 ? -1 : got);
         file->ino->sb->dir[extent].pointers[ptr]=block&0xff;
@@ -1328,45 +1367,55 @@ int cpmWrite(struct cpmFile *file, const char *buf, int count)
         end=(blocksize-1)/file->ino->sb->secLength;
         memset(buffer,0,blocksize);
       }
-      else
+      /*}}}*/
+      else /* read existing block and set start/end to cover modified parts */ /*{{{*/
       {
         start=(file->pos%blocksize)/file->ino->sb->secLength;
         end=((file->pos%blocksize+count)>blocksize ? blocksize-1 : (file->pos%blocksize+count-1))/file->ino->sb->secLength;
         if (file->pos%file->ino->sb->secLength) readBlock(file->ino->sb,block,buffer,start,start);
         if (end!=start && (file->pos+count-1)<blocksize) readBlock(file->ino->sb,block,buffer+end*file->ino->sb->secLength,end,end);
       }
+      /*}}}*/
       nextblockpos=(file->pos/blocksize)*blocksize+blocksize;
       findblock=0;
     }
-    buffer[file->pos%blocksize]=*buf++;
-    ++file->pos;
-    if (file->ino->size<file->pos) file->ino->size=file->pos;
-    ++got;
-    if (file->pos==nextblockpos) { if (file->pos==nextextpos) findext=1; else findblock=1; }
-    --count;
+    /*}}}*/
+    /* fill block and write it */ /*{{{*/
+    while (file->pos!=nextblockpos && count)
+    {
+      buffer[file->pos%blocksize]=*buf++;
+      ++file->pos;
+      if (file->ino->size<file->pos) file->ino->size=file->pos;
+      ++got;
+      --count;
+    }
+    (void)writeBlock(file->ino->sb,block,buffer,start,end);
+    if (file->ino->sb->size<256) for (last=15; last>=0; --last)
+    {
+      if (file->ino->sb->dir[extent].pointers[last])
+      {
+        break;
+      }
+    }
+    else for (last=14; last>0; last-=2)
+    {
+      if (file->ino->sb->dir[extent].pointers[last] || file->ino->sb->dir[extent].pointers[last+1])
+      {
+        last/=2;
+        break;
+      }
+    }
+    if (last>0) extentno+=(last*blocksize)/extcap;
+    file->ino->sb->dir[extent].extnol=EXTENTL(extentno);
+    file->ino->sb->dir[extent].extnoh=EXTENTH(extentno);
+    file->ino->sb->dir[extent].blkcnt=((file->pos-1)%16384)/128+1;
+    file->ino->sb->dir[extent].lrc=file->pos%128;
+    updateTimeStamps(file->ino,extent);
+    /*}}}*/
+    if (file->pos==nextextpos) findext=1;
+    else if (file->pos==nextblockpos) findblock=1;
   }
-  if (start!=-1)
-  {
-    int last;
-    
-    last=writeBlock(file->ino->sb,block,buffer,start,end);
-    if (file->ino->sb->size<256) for (last=15; last>=ptr; --last)
-    {
-      if (file->ino->sb->dir[extent].pointers[last]) break;
-    }
-    else for (last=14; last>=ptr; last-=2)
-    {
-      if (file->ino->sb->dir[extent].pointers[last] || file->ino->sb->dir[extent].pointers[last+1]) break;
-    }
-    if (last==ptr) /* we wrote the last used block of this extent */
-    {
-      file->ino->sb->dir[extent].extnol=EXTENTL((file->pos-1)/16384);
-      file->ino->sb->dir[extent].extnoh=EXTENTH((file->pos-1)/16384);
-      file->ino->sb->dir[extent].blkcnt=((file->pos-1)%16384)/128+1;
-      file->ino->sb->dir[extent].lrc=file->pos%128;
-      writePhysDirectory(file->ino->sb);
-    }
-  }
+  writePhysDirectory(file->ino->sb);
   return got;
 }
 /*}}}*/
@@ -1470,7 +1519,7 @@ int cpmChmod(struct cpmInode *ino, mode_t mode)
 	/* Convert the chmod() into a chattr() call that affects RO */
 	int newatt = ino->attr & ~CPM_ATTR_RO;
 
-	if ((mode & (S_IWUSR|S_IWGRP|S_IWOTH))) newatt |= CPM_ATTR_RO;
+	if (!(mode & (S_IWUSR|S_IWGRP|S_IWOTH))) newatt |= CPM_ATTR_RO;
 	return cpmAttrSet(ino, newatt);
 }
 /*}}}*/

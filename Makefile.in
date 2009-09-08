@@ -14,13 +14,14 @@ CC=		@CC@
 CFLAGS=		@CFLAGS@
 LDFLAGS=        @LDFLAGS@
 DEFFORMAT=      @DEFFORMAT@
+DISKDEFS=	@DISKDEFS@
 DEVICE=         @DEVICE@
 FSED_CPM=       @FSED_CPM@
 EXEEXT =        @EXEEXT@
 OBJEXT =        .@OBJEXT@
 LIBS=           @LIBS@ @LDLIBS@
 LDDEPS=		@LDDEPS@
-CPPFLAGS=	@CPPFLAGS@ -DDISKDEFS=\"@datarootdir@/diskdefs\" -DFORMAT=\"$(DEFFORMAT)\"
+CPPFLAGS=	@CPPFLAGS@ -DDISKDEFS=\"$(DISKDEFS)\" -DFORMAT=\"$(DEFFORMAT)\"
 #
 # I'm only a novice and I haven't worked out how to autoconf this one
 #
@@ -86,13 +87,13 @@ install:	all
 		$(INSTALL) -s -m 755 cpmchattr $(BINDIR)/cpmchattr
 		$(INSTALL) -s -m 755 mkfs.cpm $(BINDIR)/mkfs.cpm
 		$(INSTALL) -s -m 755 fsck.cpm $(BINDIR)/fsck.cpm
-		$(INSTALL) -s -m 755 fsed.cpm $(BINDIR)/fsed.cpm
+		[ $(FSED_CPM) != '' ] && $(INSTALL) -s -m 755 fsed.cpm $(BINDIR)/fsed.cpm
 		$(INSTALL_DATA) diskdefs @datarootdir@/diskdefs
 		$(INSTALL_DATA) cpmls.1 $(MANDIR)/man1/cpmls.1
 		$(INSTALL_DATA) cpmcp.1 $(MANDIR)/man1/cpmcp.1
 		$(INSTALL_DATA) cpmrm.1 $(MANDIR)/man1/cpmrm.1
 		$(INSTALL_DATA) cpmchmod.1 $(MANDIR)/man1/cpmchmod.1
-		$(INSTALL_DATA) cpmchmod.1 $(MANDIR)/man1/cpmchattr.1
+		$(INSTALL_DATA) cpmchattr.1 $(MANDIR)/man1/cpmchattr.1
 		$(INSTALL_DATA) mkfs.cpm.1 $(MANDIR)/man1/mkfs.cpm.1
 		$(INSTALL_DATA) fsck.cpm.1 $(MANDIR)/man1/fsck.cpm.1
 		$(INSTALL_DATA) fsed.cpm.1 $(MANDIR)/man1/fsed.cpm.1

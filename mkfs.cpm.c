@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "getopt.h"
+#include "getopt_.h"
 #include "cpmfs.h"
 
 #ifdef USE_DMALLOC
@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) /*{{{*/
   }
 
   if (optind!=(argc-1)) usage=1;
-  else image=argv[optind];
+  else image=argv[optind++];
 
   if (usage)
   {
