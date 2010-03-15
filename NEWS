@@ -1,3 +1,5 @@
-Changes since 2.9:
+Changes since 2.12:
 
-o  New diskdefs entry for Robotron 1715 with SCP3
+o  Fix for cpmcp to open files as "rb"
+o  Fixes for MinGW
+o  Skew table generation bugfix
