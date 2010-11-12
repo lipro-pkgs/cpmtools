@@ -1,3 +1,9 @@
+cpmtools (2.12-2) UNRELEASED; urgency=low
+
+  * add Vcs entries to the control file
+
+ -- Bdale Garbee <bdale@gag.com>  Thu, 11 Nov 2010 17:57:57 -0700
+
 cpmtools (2.12-1) unstable; urgency=low
 
   * new upstream version
