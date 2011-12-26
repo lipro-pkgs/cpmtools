@@ -12,9 +12,10 @@ configure-stamp:
 		--datarootdir=/etc/cpmtools
 	touch configure-stamp
 
-build: build-stamp
-
-build-stamp: configure-stamp 
+build: build-arch build-indep
+build-arch: build-stamp
+build-indep: build-stamp
+build-stamp: configure-stamp
 	dh_testdir
 	$(MAKE)
 	touch build-stamp

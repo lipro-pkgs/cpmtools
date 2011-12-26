@@ -3,7 +3,7 @@ Section: otherosfs
 Priority: optional
 Maintainer: Bdale Garbee <bdale@gag.com>
 Build-Depends: debhelper (>> 5), libncurses-dev, autotools-dev
-Standards-Version: 3.8.4
+Standards-Version: 3.9.2
 Vcs-Git: git://git.gag.com/debian/cpmtools
 Vcs-Browser: http://git.gag.com/?p=debian/cpmtools
 
@@ -11,7 +11,7 @@ Package: cpmtools
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Tools to access CP/M file systems
- This package allows to access CP/M file systems similar to the well-known 
+ This package allows access to CP/M file systems similar to the well-known 
  mtools package, which accesses MSDOS file systems.
  .
  All CP/M file system features are supported.
