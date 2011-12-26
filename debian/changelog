@@ -1,4 +1,4 @@
-cpmtools (2.13-1) UNRELEASED; urgency=low
+cpmtools (2.13-1) unstable; urgency=low
 
   * new uptream version
   * add Vcs entries to the control file
