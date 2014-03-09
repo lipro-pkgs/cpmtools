@@ -32,7 +32,7 @@ static int preserve=0;
 static int userNumber(const char *s) /*{{{*/
 {
   if (isdigit(*s) && *(s+1)==':') return (*s-'0');
-  if (isdigit(*s) && isdigit(*(s+1)) && *(s+2)==':') return (10*(*s-'0')+(*(s+1)));
+  if (isdigit(*s) && isdigit(*(s+1)) && *(s+2)==':') return (10*(*s-'0')+(*(s+1)-'0'));
   return -1;
 }
 /*}}}*/
@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
   /* variables */ /*{{{*/
   const char *err;
   const char *image;
-  const char *format=FORMAT;
+  const char *format;
   const char *devopts=NULL;
   int c,readcpm=-1,todir=-1;
   struct cpmInode root;
@@ -135,6 +135,7 @@ int main(int argc, char *argv[])
   /*}}}*/
 
   /* parse options */ /*{{{*/
+  if (!(format=getenv("CPMTOOLSFMT"))) format=FORMAT;
   while ((c=getopt(argc,argv,"T:f:h?pt"))!=EOF) switch(c)
   {
     case 'T': devopts=optarg; break;
@@ -226,15 +227,18 @@ int main(int argc, char *argv[])
       {
         struct cpmInode ino;
         char cpmname[2+8+1+3+1]; /* 00foobarxy.zzy\0 */
+        struct stat st;
+
+        stat(argv[i],&st);
 
         if (todir)
         {
           if ((dest=strrchr(argv[i],'/'))!=(char*)0) ++dest; else dest=argv[i];
-          sprintf(cpmname,"%02d%s",userNumber(argv[argc-1]),dest);
+          snprintf(cpmname,sizeof(cpmname),"%02d%s",userNumber(argv[argc-1]),dest);
         }
         else
         {
-          sprintf(cpmname,"%02d%s",userNumber(argv[argc-1]),strchr(argv[argc-1],':')+1);
+          snprintf(cpmname,sizeof(cpmname),"%02d%s",userNumber(argv[argc-1]),strchr(argv[argc-1],':')+1);
         }
         if (cpmCreat(&root,cpmname,&ino,0666)==-1) /* just cry */ /*{{{*/
         {
@@ -273,6 +277,13 @@ int main(int argc, char *argv[])
             exitcode=1;
           }
           /*}}}*/
+          if (preserve && !ohno)
+          {
+            struct utimbuf times;
+            times.actime=st.st_atime;
+            times.modtime=st.st_mtime;
+            cpmUtime(&ino,&times);
+          }
         }
         fclose(ufp);
       }

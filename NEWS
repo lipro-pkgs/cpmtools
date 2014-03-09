@@ -1,3 +1,5 @@
-Changes since 2.13:
+Changes since 2.16:
 
-o  Avoid unneccessary directory writes
+o  Improved filesystem documentation
+o  Many new diskdefs
+o  device_win32.c fixed by Bill Buckels
