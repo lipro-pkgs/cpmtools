@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "getopt_.h"
 #include "cpmfs.h"
@@ -372,21 +373,21 @@ int main(int argc, char *argv[])
 
   if (usage)
   {
-#if HAVE_LIBDSK_H
     fprintf(stderr,"Usage: %s [-f format] [-T libdsk-type] [-d|-D|-F|-A|[-l][-c][-i]] image [file ...]\n",cmd);
-#else
-    fprintf(stderr,"Usage: %s [-f format] [-d|-D|-F|-A|[-l][-c][-i]] image [file ...]\n",cmd);
-#endif
     exit(1);
   }
   /*}}}*/
   /* open image */ /*{{{*/
   if ((err=Device_open(&drive.dev,image,O_RDONLY,devopts))) 
   {
-    fprintf(stderr,"%s: can not open %s (%s)\n",cmd,image,err);
+    fprintf(stderr,"%s: cannot open %s (%s)\n",cmd,image,err);
     exit(1);
   }
-  cpmReadSuper(&drive,&root,format);
+  if (cpmReadSuper(&drive,&root,format)==-1)
+  {
+    fprintf(stderr,"%s: cannot read superblock (%s)\n",cmd,boo);
+    exit(1);
+  }
   /*}}}*/
   if (optind<argc) cpmglob(optind,argc,argv,&root,&gargc,&gargv);
   else cpmglob(0,1,star,&root,&gargc,&gargv);

@@ -7,7 +7,6 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
-#include <fcntl.h>
 #include <limits.h>
 #include <stdlib.h>
 #include <utime.h>
@@ -64,7 +63,7 @@ static int cpmToUnix(const struct cpmInode *root, const char *src, const char *d
       int res;
       char buf[4096];
 
-      while ((res=cpmRead(&file,buf,sizeof(buf)))!=0)
+      while ((res=cpmRead(&file,buf,sizeof(buf)))>0)
       {
         int j;
 
@@ -93,6 +92,7 @@ static int cpmToUnix(const struct cpmInode *root, const char *src, const char *d
         }
       }
       endwhile:
+      if (res==-1 && !ohno) { fprintf(stderr,"%s: can not read %s (%s)\n",cmd,src,boo); exitcode=1; ohno=1; }
       if (fclose(ufp)==EOF && !ohno) { fprintf(stderr,"%s: can not close %s: %s\n",cmd,dest,strerror(errno)); exitcode=1; ohno=1; }
       if (preserve && !ohno && (ino.atime || ino.mtime))
       {
@@ -178,10 +178,14 @@ int main(int argc, char *argv[])
   /* open image file */ /*{{{*/
   if ((err=Device_open(&super.dev,image,readcpm ? O_RDONLY : O_RDWR, devopts)))
   {
-    fprintf(stderr,"%s: can not open %s (%s)\n",cmd,image,err);
+    fprintf(stderr,"%s: cannot open %s (%s)\n",cmd,image,err);
     exit(1);
   }
-  cpmReadSuper(&super,&root,format);
+  if (cpmReadSuper(&super,&root,format)==-1)
+  {
+    fprintf(stderr,"%s: cannot read superblock (%s)\n",cmd,boo);
+    exit(1);
+  }
   /*}}}*/
   if (readcpm) /* copy from CP/M to UNIX */ /*{{{*/
   {
@@ -255,7 +259,7 @@ int main(int argc, char *argv[])
           cpmOpen(&ino,&file,O_WRONLY);
           do
           {
-            int j;
+            unsigned int j;
 
             for (j=0; j<(sizeof(buf)/2) && (c=getc(ufp))!=EOF; ++j)
             {
@@ -263,7 +267,7 @@ int main(int argc, char *argv[])
               buf[j]=c;
             }
             if (text && c==EOF) buf[j++]='\032';
-            if (cpmWrite(&file,buf,j)!=j)
+            if (cpmWrite(&file,buf,j)!=(ssize_t)j)
             {
               fprintf(stderr,"%s: can not write %s: %s\n",cmd,dest,boo);
               ohno=1;
