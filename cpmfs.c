@@ -325,9 +325,14 @@ static int readBlock(const struct cpmSuperBlock *d, int blockno, char *buffer, i
 {
   int sect, track, counter;
 
+  assert(d);
   assert(blockno>=0);
-  assert(blockno<d->size);
-  assert(buffer!=(char*)0);
+  assert(buffer);
+  if (blockno>=d->size)
+  {
+    boo="Attempting to access block beyond end of disk";
+    return -1;
+  }
   if (end<0) end=d->blksiz/d->secLength-1;
   sect=(blockno*(d->blksiz/d->secLength)+ d->sectrk*d->boottrk)%d->sectrk;
   track=(blockno*(d->blksiz/d->secLength)+ d->sectrk*d->boottrk)/d->sectrk;
@@ -335,6 +340,8 @@ static int readBlock(const struct cpmSuperBlock *d, int blockno, char *buffer, i
   {
     const char *err;
 
+    assert(d->skewtab[sect]>=0);
+    assert(d->skewtab[sect]<d->sectrk);
     if (counter>=start && (err=Device_readSector(&d->dev,track,d->skewtab[sect],buffer+(d->secLength*counter))))
     {
       boo=err;
@@ -581,6 +588,8 @@ static int recmatch(const char *a, const char *pattern)
 {
   int first=1;
 
+  assert(a);
+  assert(pattern);
   while (*pattern)
   {
     switch (*pattern)
@@ -609,6 +618,8 @@ int match(const char *a, const char *pattern)
   int user;
   char pat[255];
 
+  assert(a);
+  assert(pattern);
   assert(strlen(pattern)<255);
   if (isdigit(*pattern) && *(pattern+1)==':') { user=(*pattern-'0'); pattern+=2; }
   else if (isdigit(*pattern) && isdigit(*(pattern+1)) && *(pattern+2)==':') { user=(10*(*pattern-'0')+(*(pattern+1)-'0')); pattern+=3; }
@@ -665,6 +676,7 @@ static int diskdefReadSuper(struct cpmSuperBlock *d, const char *format)
   FILE *fp;
   int insideDef=0,found=0;
 
+  d->libdskGeometry[0] = '\0';
   d->type=0;
   if ((fp=fopen("diskdefs","r"))==(FILE*)0 && (fp=fopen(DISKDEFS,"r"))==(FILE*)0)
   {
@@ -675,6 +687,13 @@ static int diskdefReadSuper(struct cpmSuperBlock *d, const char *format)
   {
     int argc;
     char *argv[2];
+    char *s;
+
+    /* Allow inline comments preceded by ; or # */
+    s = strchr(line, '#');
+    if (s) strcpy(s, "\n");
+    s = strchr(line, ';');
+    if (s) strcpy(s, "\n");
 
     for (argc=0; argc<1 && (argv[argc]=strtok(argc ? (char*)0 : line," \t\n")); ++argc);
     if ((argv[argc]=strtok((char*)0,"\n"))!=(char*)0) ++argc;
@@ -702,8 +721,6 @@ static int diskdefReadSuper(struct cpmSuperBlock *d, const char *format)
 
           for (pass=0; pass<2; ++pass)
           {
-            char *s;
-
             sectors=0;
             for (s=argv[1]; *s; )
             {
@@ -733,8 +750,8 @@ static int diskdefReadSuper(struct cpmSuperBlock *d, const char *format)
 
           errno=0;
           multiplier=1;
-          val = strtoul(argv[1],&endptr,10);
-          if ((errno==ERANGE && val==ULONG_MAX)||(errno!=0 && val==0))
+          val = strtol(argv[1],&endptr,10);
+          if ((errno==ERANGE && val==LONG_MAX)||(errno!=0 && val<=0))
           {
             fprintf(stderr,"%s: invalid offset value \"%s\" - %s\n",cmd,argv[1],strerror(errno));
             exit(1);
@@ -749,31 +766,31 @@ static int diskdefReadSuper(struct cpmSuperBlock *d, const char *format)
             /* Have a unit specifier */
             switch (toupper(*endptr))
             {
-            case 'K':
-              multiplier=1024;
-              break;
-            case 'M':
-              multiplier=1024*1024;
-              break;
-            case 'T':
-              if (d->sectrk<0||d->tracks<0||d->secLength<0)
-              {
-                fprintf(stderr,"%s: offset must be specified after sectrk, tracks and secLength\n",cmd);
+              case 'K':
+                multiplier=1024;
+                break;
+              case 'M':
+                multiplier=1024*1024;
+                break;
+              case 'T':
+                if (d->sectrk<0||d->tracks<0||d->secLength<0)
+                {
+                  fprintf(stderr,"%s: offset must be specified after sectrk, tracks and secLength\n",cmd);
+                  exit(1);
+                }
+                multiplier=d->sectrk*d->secLength;
+                break;
+              case 'S':
+                if (d->sectrk<0||d->tracks<0||d->secLength<0)
+                {
+                  fprintf(stderr,"%s: offset must be specified after sectrk, tracks and secLength\n",cmd);
+                  exit(1);
+                }
+                multiplier=d->secLength;
+                break;
+              default:
+                fprintf(stderr,"%s: unknown unit specifier \"%c\"\n",cmd,*endptr);
                 exit(1);
-              }
-              multiplier=d->sectrk*d->secLength;
-              break;
-            case 'S':
-              if (d->sectrk<0||d->tracks<0||d->secLength<0)
-              {
-                fprintf(stderr,"%s: offset must be specified after sectrk, tracks and secLength\n",cmd);
-                exit(1);
-              }
-              multiplier=d->secLength;
-              break;
-            default:
-              fprintf(stderr,"%s: unknown unit specifier \"%c\"\n",cmd,*endptr);
-              exit(1);
             }
           }
           if (val*multiplier>INT_MAX)
@@ -797,8 +814,13 @@ static int diskdefReadSuper(struct cpmSuperBlock *d, const char *format)
             exit(1);
           }
         }
+	else if (strcmp(argv[0], "libdsk:format")==0)
+        {
+          strncpy(d->libdskGeometry, argv[1], sizeof(d->libdskGeometry) - 1);
+          d->libdskGeometry[sizeof(d->libdskGeometry) - 1] = 0;
+        }
       }
-      else if (argc>0 && argv[0][0]!='#')
+      else if (argc>0 && argv[0][0]!='#' && argv[0][0]!=';')
       {
         fprintf(stderr,"%s: invalid keyword `%s'\n",cmd,argv[0]);
         exit(1);
@@ -809,10 +831,11 @@ static int diskdefReadSuper(struct cpmSuperBlock *d, const char *format)
       insideDef=1;
       d->skew=1;
       d->extents=0;
-      d->type|=CPMFS_DR3;
+      d->type=CPMFS_DR22;
       d->skewtab=(int*)0;
       d->offset=0;
       d->boottrk=d->secLength=d->sectrk=d->tracks=-1;
+      d->libdskGeometry[0] = 0;
       if (strcmp(argv[1],format)==0) found=1;
     }
   }
@@ -851,7 +874,7 @@ static int amsReadSuper(struct cpmSuperBlock *d, const char *format)
   unsigned char boot_sector[512], *boot_spec;
   const char *err;
 
-  Device_setGeometry(&d->dev,512,9,40,0);
+  Device_setGeometry(&d->dev,512,9,40,0,"pcw180");
   if ((err=Device_readSector(&d->dev, 0, 0, (char *)boot_sector)))
   {
     fprintf(stderr,"%s: Failed to read Amstrad superblock (%s)\n",cmd,err);
@@ -896,6 +919,8 @@ static int amsReadSuper(struct cpmSuperBlock *d, const char *format)
   d->offset    = 0;
   d->size      = (d->secLength*d->sectrk*(d->tracks-d->boottrk))/d->blksiz;
   d->extents   = ((d->size>=256 ? 8 : 16)*d->blksiz)/16384;
+  d->libdskGeometry[0] = 0; /* LibDsk can recognise an Amstrad superblock 
+                             * and autodect */
  
   return 0;
 }
@@ -953,23 +978,27 @@ int cpmReadSuper(struct cpmSuperBlock *d, struct cpmInode *root, const char *for
   assert(s_ifdir);
   while (s_ifreg && !S_ISREG(s_ifreg)) s_ifreg<<=1;
   assert(s_ifreg);
-  if (strcmp(format, "amstrad")==0) amsReadSuper(d,format);
+  if (strcmp(format,"amstrad")==0) amsReadSuper(d,format);
   else diskdefReadSuper(d,format);
-  Device_setGeometry(&d->dev,d->secLength,d->sectrk,d->tracks,d->offset);
+  boo = Device_setGeometry(&d->dev,d->secLength,d->sectrk,d->tracks,d->offset,d->libdskGeometry);
+  if (boo) return -1;
+
   if (d->skewtab==(int*)0) /* generate skew table */ /*{{{*/
   {
     int	i,j,k;
 
     if (( d->skewtab = malloc(d->sectrk*sizeof(int))) == (int*)0) 
     {
-      fprintf(stderr,"%s: can not allocate memory for skew sector table\n",cmd);
-      exit(1);
+      boo=strerror(errno);
+      return -1;
     }
     memset(d->skewtab,0,d->sectrk*sizeof(int));
     for (i=j=0; i<d->sectrk; ++i,j=(j+d->skew)%d->sectrk)
     {
       while (1)
       {
+        assert(i<d->sectrk);
+        assert(j<d->sectrk);
         for (k=0; k<i && d->skewtab[k]!=j; ++k);
         if (k<i) j=(j+1)%d->sectrk;
         else break;
@@ -983,15 +1012,16 @@ int cpmReadSuper(struct cpmSuperBlock *d, struct cpmInode *root, const char *for
     d->alvSize=((d->secLength*d->sectrk*(d->tracks-d->boottrk))/d->blksiz+INTBITS-1)/INTBITS;
     if ((d->alv=malloc(d->alvSize*sizeof(int)))==(int*)0) 
     {
-      boo="out of memory";
+      boo=strerror(errno);
       return -1;
     }
   }
   /*}}}*/
   /* allocate directory buffer */ /*{{{*/
-  if ((d->dir=malloc(d->maxdir*32))==(struct PhysDirectoryEntry*)0)
+  assert(sizeof(struct PhysDirectoryEntry)==32);
+  if ((d->dir=malloc(((d->maxdir*32+d->blksiz-1)/d->blksiz)*d->blksiz))==(struct PhysDirectoryEntry*)0)
   {
-    boo="out of memory";
+    boo=strerror(errno);
     return -1;
   }
   /*}}}*/
@@ -1423,7 +1453,6 @@ int cpmReaddir(struct cpmFile *dir, struct cpmDirent *ent)
   /* variables */ /*{{{*/
   struct PhysDirectoryEntry *cur=(struct PhysDirectoryEntry*)0;
   char buf[2+8+1+3+1]; /* 00foobarxy.zzy\0 */
-  int i;
   char *bufp;
   int hasext;
   /*}}}*/
@@ -1436,6 +1465,8 @@ int cpmReaddir(struct cpmFile *dir, struct cpmDirent *ent)
   /*}}}*/
   while (1)
   {
+    int i;
+
     if (dir->pos==0) /* first entry is . */ /*{{{*/
     {
       ent->ino=dir->ino->sb->maxdir;
@@ -1482,7 +1513,7 @@ int cpmReaddir(struct cpmFile *dir, struct cpmDirent *ent)
       }
       /*}}}*/
     }
-    else if (dir->pos>=RESERVED_ENTRIES && dir->pos<dir->ino->sb->maxdir+RESERVED_ENTRIES)
+    else if (dir->pos>=RESERVED_ENTRIES && dir->pos<(int)dir->ino->sb->maxdir+RESERVED_ENTRIES)
     {
       int first=dir->pos-RESERVED_ENTRIES;
 
@@ -1564,7 +1595,7 @@ int cpmRead(struct cpmFile *file, char *buf, int count)
 
   extcap=(file->ino->sb->size<256 ? 16 : 8)*blocksize;
   if (extcap>16384) extcap=16384*file->ino->sb->extents;
-  if (file->ino->ino==file->ino->sb->maxdir+1) /* [passwd] */ /*{{{*/
+  if (file->ino->ino==(ino_t)file->ino->sb->maxdir+1) /* [passwd] */ /*{{{*/
   {
     if ((file->pos+count)>file->ino->size) count=file->ino->size-file->pos;
     if (count) memcpy(buf,file->ino->sb->passwd+file->pos,count);
@@ -1575,7 +1606,7 @@ int cpmRead(struct cpmFile *file, char *buf, int count)
     return count;
   }
   /*}}}*/
-  else if (file->ino->ino==file->ino->sb->maxdir+2) /* [label] */ /*{{{*/
+  else if (file->ino->ino==(ino_t)file->ino->sb->maxdir+2) /* [label] */ /*{{{*/
   {
     if ((file->pos+count)>file->ino->size) count=file->ino->size-file->pos;
     if (count) memcpy(buf,file->ino->sb->label+file->pos,count);
@@ -1616,7 +1647,11 @@ int cpmRead(struct cpmFile *file, char *buf, int count)
         {
           start=(file->pos%blocksize)/file->ino->sb->secLength;
           end=((file->pos%blocksize+count)>blocksize ? blocksize-1 : (file->pos%blocksize+count-1))/file->ino->sb->secLength;
-          readBlock(file->ino->sb,block,buffer,start,end);
+          if (readBlock(file->ino->sb,block,buffer,start,end)==-1)
+          {
+            if (got==0) got=-1;
+            break;
+          }
         }
       }
       nextblockpos=(file->pos/blocksize)*blocksize+blocksize;
@@ -1693,8 +1728,22 @@ int cpmWrite(struct cpmFile *file, const char *buf, int count)
       {
         start=(file->pos%blocksize)/file->ino->sb->secLength;
         end=((file->pos%blocksize+count)>blocksize ? blocksize-1 : (file->pos%blocksize+count-1))/file->ino->sb->secLength;
-        if (file->pos%file->ino->sb->secLength) readBlock(file->ino->sb,block,buffer,start,start);
-        if (end!=start && (file->pos+count-1)<blocksize) readBlock(file->ino->sb,block,buffer+end*file->ino->sb->secLength,end,end);
+        if (file->pos%file->ino->sb->secLength)
+        {
+          if (readBlock(file->ino->sb,block,buffer,start,start)==-1)
+          {
+            if (got==0) got=-1;
+            break;
+          }
+        }
+        if (end!=start && (file->pos+count-1)<blocksize)
+        {
+          if (readBlock(file->ino->sb,block,buffer+end*file->ino->sb->secLength,end,end)==-1)
+          {
+            if (got==0) got=-1;
+            break;
+          }
+        }
       }
       /*}}}*/
       nextblockpos=(file->pos/blocksize)*blocksize+blocksize;
