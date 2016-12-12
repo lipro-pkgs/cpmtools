@@ -1,6 +1,6 @@
 cpmtools (2.20-1) unstable; urgency=low
 
-  * new upstream version
+  * new upstream version, closes: #792650
 
  -- Bdale Garbee <bdale@gag.com>  Mon, 12 Dec 2016 16:06:16 -0700
 
