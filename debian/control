@@ -2,7 +2,7 @@ Source: cpmtools
 Section: otherosfs
 Priority: optional
 Maintainer: Bdale Garbee <bdale@gag.com>
-Build-Depends: debhelper (>> 5), libncurses-dev, autotools-dev
+Build-Depends: debhelper (>> 10), libncurses-dev, autotools-dev
 Standards-Version: 3.9.8
 Vcs-Git: git://git.gag.com/debian/cpmtools
 Vcs-Browser: http://git.gag.com/?p=debian/cpmtools
