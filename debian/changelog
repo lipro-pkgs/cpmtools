@@ -7,6 +7,7 @@ cpmtools (2.20-2cpm4l1) UNRELEASED; urgency=low
   * Makefile.in, {fsck,fsed}.cpm.1.in: Revert already applied patch.
   * debian/patches: Support destination directory setup with DESTDIR.
   * debian/rules: Convert to the debhelper sequence wrapper dh.
+  * debian/patches: Do not strip binaries.
 
  --
 
