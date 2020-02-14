@@ -1,3 +1,10 @@
+cpmtools (2.20+dfsg-3cpm4l1) UNRELEASED; urgency=low
+
+  * UNRELEASED
+  * New DFSG conform upstream version.
+
+ --
+
 cpmtools (2.20-2cpm4l1) unstable; urgency=low
 
   * debian/control: Updated maintainer fields for CPM4L's github place.
