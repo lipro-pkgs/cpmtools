@@ -2,6 +2,7 @@ cpmtools (2.20+dfsg-3cpm4l1) UNRELEASED; urgency=low
 
   * UNRELEASED
   * New DFSG conform upstream version.
+  * debian/copyright: Upgrade to Debian copyright format version 1.0.
 
  --
 
