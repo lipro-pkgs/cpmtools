@@ -4,6 +4,7 @@ Priority: optional
 Maintainer: Stephan Linz <linz@li-pro.net>
 Build-Depends: debhelper (>= 9), libncurses-dev
 Standards-Version: 3.9.8
+Homepage: http://www.moria.de/~michael/cpmtools/
 Vcs-Git: https://github.com/lipro-pkgs/cpmtools.git
 Vcs-Browser: https://github.com/lipro-pkgs/cpmtools
 
