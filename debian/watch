@@ -7,7 +7,7 @@ version=3
 
 # Current manual tar-* at GitHub
 opts="\
-dversionmangle=s/\+dfsg\.\d+$//,\
+dversionmangle=s/(.*)\+dfsg(.?\d+)?$/$1$2/,\
 repacksuffix=+dfsg,repack,compression=xz"\
     http://www.moria.de/~michael/cpmtools/ .*/cpmtools-(\d\S+)@ARCHIVE_EXT@
 
