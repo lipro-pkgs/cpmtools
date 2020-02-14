@@ -3,61 +3,39 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-configure: configure-stamp
-configure-stamp:
-	dh_testdir
+export DEB_BUILD_MAINT_OPTIONS=hardening=+all
+
+%:
+	dh $@
+
+override_dh_auto_configure:
 	cp /usr/share/misc/config.sub config.sub
 	cp /usr/share/misc/config.guess config.guess
-	./configure --prefix=/usr --mandir=\$${prefix}/share/man \
-		--datarootdir=/etc/cpmtools
-	touch configure-stamp
+	dh_auto_configure -- --datarootdir=/etc/cpmtools
 
-build: build-arch build-indep
-build-arch: build-stamp
-build-indep: build-stamp
-build-stamp: configure-stamp
-	dh_testdir
-	$(MAKE)
-	touch build-stamp
+.PHONY: get-packaged-orig-source
+get-packaged-orig-source:
+	$(uscan-download-source) --download-current-version
 
-clean:
-	dh_testdir
-	dh_testroot
-	rm -f build-stamp configure-stamp
-	[ ! -f Makefile ] || $(MAKE) distclean
-	dh_clean
+# Policy §4.9 strongly recommends the ‘get-orig-source’ target:
+# “This target is optional, but providing it if possible is a good idea.”
+#
+# This target is an anomaly: per Policy §4.9, it fetches the *latest*
+# upstream source, regardless of this package's version. To fetch the
+# upstream source corresponding to this package's *declared* version
+# in ‘debian/changelog’, use ‘get-packaged-orig-source’ instead.
+.PHONY: get-orig-source
+get-orig-source:
+	$(uscan-download-source)
 
-install: build
-	dh_testdir
-	dh_testroot
-	dh_prep
-	dh_installdirs
-	$(MAKE) install prefix=$(CURDIR)/debian/cpmtools/usr \
-		datarootdir=$(CURDIR)/debian/cpmtools/etc/cpmtools
+get-orig-source get-packaged-orig-source: http_proxy =
+get-orig-source get-packaged-orig-source: makefile_dir = $(abspath $(dir $(firstword ${MAKEFILE_LIST})))
+get-orig-source get-packaged-orig-source: package_dir = $(abspath $(dir ${makefile_dir}))
 
-# Build architecture-independent files here.
-binary-indep: build install
-
-# Build architecture-dependent files here.
-binary-arch: build install
-	dh_testdir
-	dh_testroot
-	dh_installdocs
-	dh_installexamples
-	dh_installmenu
-	dh_installcron
-	dh_installman
-	dh_installinfo
-	dh_installchangelogs 
-	dh_link
-	dh_strip
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_shlibdeps
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
-
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install configure
+define uscan-download-source
+	uscan --noconf --verbose \
+	    --force-download \
+	    --rename \
+	    --destdir=$(CURDIR) \
+	    --check-dirname-level=0 ${package_dir}
+endef # uscan-download-source

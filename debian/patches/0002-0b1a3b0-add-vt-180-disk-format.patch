@@ -1,0 +1,39 @@
+From 0b1a3b0e82c6b198f9b217e1fa3b48e7108c494c Mon Sep 17 00:00:00 2001
+From: Bavarese <Bavarese@users.noreply.github.com>
+Date: Thu, 1 Mar 2018 16:49:45 +0100
+Subject: Add VT-180 disk format
+
+Added DEC VT-180 'Robin' (CP/M) disk format.
+
+Tested with various disk images available on Bitsavers, see:
+http://bitsavers.org/pdf/dec/terminal/vt180/dskimage/
+
+Pull-request: #2
+Signed-off-by: Stephan Linz <linz@li-pro.net>
+
+diff --git a/diskdefs b/diskdefs
+index d080091..94694aa 100644
+--- a/diskdefs
++++ b/diskdefs
+@@ -706,7 +706,20 @@ diskdef lobo3
+   os 3
+ end
+ 
+-# PRO CP/M RZ50 DZ format (Perhaps only 79 tracks should be used?)
++# DEC VT-180 'Robin' (CP/M); works with disks available on Bitsavers (http://bitsavers.org/pdf/dec/terminal/vt180/dskimage/)
++diskdef vt180
++   seclen 512
++   tracks 40
++   sectrk 9
++   blocksize 1024
++   maxdir 64
++   skew 2
++   os 2.2
++   boottrk 2
++   logicalextents 1
++end
++
++# DEC Rainbow-100 CP/M disks; also DEC PRO CP/M RZ50 DZ format (Perhaps only 79 tracks should be used?)
+ diskdef dec_pro
+   seclen 512
+   tracks 80

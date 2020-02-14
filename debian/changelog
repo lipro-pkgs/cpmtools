@@ -1,3 +1,19 @@
+cpmtools (2.20-2cpm4l1) unstable; urgency=low
+
+  * debian/control: Updated maintainer fields for CPM4L's github place.
+  * debian/control: Updated vcs fields for CPM4L's github place.
+  * debian/control: Downgrade to support oldstable systems.
+  * Makefile.in, {fsck,fsed}.cpm.1.in: Revert already applied patch.
+  * debian/patches: Support destination directory setup with DESTDIR.
+  * debian/rules: Convert to the debhelper sequence wrapper dh.
+  * debian/patches: Do not strip binaries.
+  * debian/{watch,rules}: Add 'get-orig-source' target as strongly
+    recommended by Debian Policy Rule §4.9 and fix the uscan rules.
+  * debian/control: Add link to the original package homepage.
+  * debian/patches: More diskdefs file entries and comments.
+
+ -- Stephan Linz <linz@li-pro.net>  Fri, 14 Feb 2020 09:08:46 +0100
+
 cpmtools (2.20-2) unstable; urgency=low
 
   * updated to policy 4.1.3
