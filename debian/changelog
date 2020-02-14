@@ -6,6 +6,7 @@ cpmtools (2.20+dfsg-3cpm4l1) UNRELEASED; urgency=low
   * debian/watch: Fix Debian version mangle for uscan.
   * debian/patches: Rebase all patches from branch 'cpm4l/cpmtools-2.20'
     as provided by: https://github.com/lipro-cpm4l/cpmtools
+  * debian/rules: Cleaning up detritus left behind package build.
 
  --
 

@@ -13,6 +13,18 @@ override_dh_auto_configure:
 	cp /usr/share/misc/config.guess config.guess
 	dh_auto_configure -- --datarootdir=/etc/cpmtools
 
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -f cpm.5
+	rm -f cpmchattr.1
+	rm -f cpmchmod.1
+	rm -f cpmcp.1
+	rm -f cpmls.1
+	rm -f cpmrm.1
+	rm -f fsck.cpm.1
+	rm -f fsed.cpm.1
+	rm -f mkfs.cpm.1
+
 .PHONY: get-packaged-orig-source
 get-packaged-orig-source:
 	$(uscan-download-source) --download-current-version
