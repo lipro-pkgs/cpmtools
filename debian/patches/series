@@ -2,3 +2,5 @@ man-page-typos.diff
 diskdefs-directory.diff
 destination-directory.diff
 dont-strip-binaries.diff
+0001-a641da1-add-comments-for-robotron-scp-format-definitions.patch
+0002-0b1a3b0-add-vt-180-disk-format.patch

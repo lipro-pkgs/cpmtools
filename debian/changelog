@@ -11,6 +11,7 @@ cpmtools (2.20-2cpm4l1) UNRELEASED; urgency=low
   * debian/{watch,rules}: Add 'get-orig-source' target as strongly
     recommended by Debian Policy Rule §4.9 and fix the uscan rules.
   * debian/control: Add link to the original package homepage.
+  * debian/patches: More diskdefs file entries and comments.
 
  --
 
