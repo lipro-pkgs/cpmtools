@@ -3,6 +3,7 @@ cpmtools (2.20-2cpm4l1) UNRELEASED; urgency=low
   * UNRELEASED
   * debian/control: Updated maintainer fields for CPM4L's github place.
   * debian/control: Updated vcs fields for CPM4L's github place.
+  * debian/control: Downgrade to support oldstable systems.
 
  --
 
