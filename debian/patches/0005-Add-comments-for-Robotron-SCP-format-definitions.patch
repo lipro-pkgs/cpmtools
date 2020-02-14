@@ -1,9 +1,12 @@
-From a641da14029e0b031bbc26e99d96e8987c85c4f2 Mon Sep 17 00:00:00 2001
+From bb28f64233ebcf18cc0b8837f311ac5f7a731498 Mon Sep 17 00:00:00 2001
 From: Stephan Linz <linz@li-pro.net>
 Date: Wed, 28 Oct 2015 19:40:02 +0100
-Subject: Add comments for Robotron SCP format definitions
+Subject: [PATCH] Add comments for Robotron SCP format definitions
 
 Signed-off-by: Stephan Linz <linz@li-pro.net>
+---
+ diskdefs | 29 ++++++++++++++++++++++++-----
+ 1 file changed, 24 insertions(+), 5 deletions(-)
 
 diff --git a/diskdefs b/diskdefs
 index 630317a..d080091 100644

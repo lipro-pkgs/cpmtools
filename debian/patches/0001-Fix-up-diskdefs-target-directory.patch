@@ -1,3 +1,17 @@
+From 14ded2bc1a32e87efc570523126c7608a08f1905 Mon Sep 17 00:00:00 2001
+From: Bdale Garbee <bdale@gag.com>
+Date: Tue, 13 Dec 2016 00:48:14 +0100
+Subject: [PATCH] Fix up diskdefs target directory.
+
+Originated-by: diskdefs-directory.diff
+Originated-md5: ec5cb1ec602009db83c4605a7dec4fa3
+Originated-URL: https://sources.debian.org/data/main/c/cpmtools/2.20-2/debian/patches/diskdefs-directory.diff
+
+Signed-off-by: Stephan Linz <linz@li-pro.net>
+---
+ Makefile.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
 diff --git a/Makefile.in b/Makefile.in
 index 878de76..d42f73a 100644
 --- a/Makefile.in

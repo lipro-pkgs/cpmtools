@@ -1,3 +1,13 @@
+From 25eb9cbbbd7ffc50a0c77f60ca7b97075c98abe3 Mon Sep 17 00:00:00 2001
+From: Stephan Linz <linz@li-pro.net>
+Date: Fri, 14 Feb 2020 19:29:16 +0100
+Subject: [PATCH] Do not strip binaries on install.
+
+Signed-off-by: Stephan Linz <linz@li-pro.net>
+---
+ Makefile.in | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
 diff --git a/Makefile.in b/Makefile.in
 index 4569b20..2326198 100644
 --- a/Makefile.in

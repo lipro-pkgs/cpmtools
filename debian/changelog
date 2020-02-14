@@ -4,6 +4,8 @@ cpmtools (2.20+dfsg-3cpm4l1) UNRELEASED; urgency=low
   * New DFSG conform upstream version.
   * debian/copyright: Upgrade to Debian copyright format version 1.0.
   * debian/watch: Fix Debian version mangle for uscan.
+  * debian/patches: Rebase all patches from branch 'cpm4l/cpmtools-2.20'
+    as provided by: https://github.com/lipro-cpm4l/cpmtools
 
  --
 

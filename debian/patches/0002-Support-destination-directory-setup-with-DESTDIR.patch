@@ -1,5 +1,15 @@
+From c65407829c651108e0b18e97d310a15b5ba0ad94 Mon Sep 17 00:00:00 2001
+From: Stephan Linz <linz@li-pro.net>
+Date: Fri, 14 Feb 2020 19:27:51 +0100
+Subject: [PATCH] Support destination directory setup with DESTDIR
+
+Signed-off-by: Stephan Linz <linz@li-pro.net>
+---
+ Makefile.in | 42 +++++++++++++++++++++---------------------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
+
 diff --git a/Makefile.in b/Makefile.in
-index 878de76..4569b20 100644
+index d42f73a..4569b20 100644
 --- a/Makefile.in
 +++ b/Makefile.in
 @@ -80,27 +80,27 @@ fsck.test:	fsck.cpm
