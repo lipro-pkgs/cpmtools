@@ -12,3 +12,30 @@ override_dh_auto_configure:
 	cp /usr/share/misc/config.sub config.sub
 	cp /usr/share/misc/config.guess config.guess
 	dh_auto_configure -- --datarootdir=/etc/cpmtools
+
+.PHONY: get-packaged-orig-source
+get-packaged-orig-source:
+	$(uscan-download-source) --download-current-version
+
+# Policy §4.9 strongly recommends the ‘get-orig-source’ target:
+# “This target is optional, but providing it if possible is a good idea.”
+#
+# This target is an anomaly: per Policy §4.9, it fetches the *latest*
+# upstream source, regardless of this package's version. To fetch the
+# upstream source corresponding to this package's *declared* version
+# in ‘debian/changelog’, use ‘get-packaged-orig-source’ instead.
+.PHONY: get-orig-source
+get-orig-source:
+	$(uscan-download-source)
+
+get-orig-source get-packaged-orig-source: http_proxy =
+get-orig-source get-packaged-orig-source: makefile_dir = $(abspath $(dir $(firstword ${MAKEFILE_LIST})))
+get-orig-source get-packaged-orig-source: package_dir = $(abspath $(dir ${makefile_dir}))
+
+define uscan-download-source
+	uscan --noconf --verbose \
+	    --force-download \
+	    --rename \
+	    --destdir=$(CURDIR) \
+	    --check-dirname-level=0 ${package_dir}
+endef # uscan-download-source

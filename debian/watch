@@ -1,0 +1,19 @@
+# debian/watch
+# Debian UScan configuration for ‘pcmtools’ package.
+# Manual page: ‘uscan(1)’.
+
+# Version of UScan configuration format.
+version=3
+
+# Current manual tar-* at GitHub
+opts="\
+dversionmangle=s/\+dfsg\.\d+$//,\
+repacksuffix=+dfsg,repack,compression=xz"\
+    http://www.moria.de/~michael/cpmtools/ .*/cpmtools-(\d\S+)@ARCHIVE_EXT@
+
+
+# Local variables:
+# coding: utf-8
+# mode: conf
+# End:
+# vim: fileencoding=utf-8 filetype=conf :
