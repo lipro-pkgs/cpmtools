@@ -1,6 +1,5 @@
-cpmtools (2.20-2cpm4l1) UNRELEASED; urgency=low
+cpmtools (2.20-2cpm4l1) unstable; urgency=low
 
-  * UNRELEASED
   * debian/control: Updated maintainer fields for CPM4L's github place.
   * debian/control: Updated vcs fields for CPM4L's github place.
   * debian/control: Downgrade to support oldstable systems.
@@ -13,7 +12,7 @@ cpmtools (2.20-2cpm4l1) UNRELEASED; urgency=low
   * debian/control: Add link to the original package homepage.
   * debian/patches: More diskdefs file entries and comments.
 
- --
+ -- Stephan Linz <linz@li-pro.net>  Fri, 14 Feb 2020 09:08:46 +0100
 
 cpmtools (2.20-2) unstable; urgency=low
 
