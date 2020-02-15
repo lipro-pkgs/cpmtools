@@ -1,7 +1,7 @@
-From 0b1a3b0e82c6b198f9b217e1fa3b48e7108c494c Mon Sep 17 00:00:00 2001
+From 2204916e9f143cd18252d15a8aa55cddee3fc316 Mon Sep 17 00:00:00 2001
 From: Bavarese <Bavarese@users.noreply.github.com>
 Date: Thu, 1 Mar 2018 16:49:45 +0100
-Subject: Add VT-180 disk format
+Subject: [PATCH] Add VT-180 disk format
 
 Added DEC VT-180 'Robin' (CP/M) disk format.
 
@@ -10,6 +10,9 @@ http://bitsavers.org/pdf/dec/terminal/vt180/dskimage/
 
 Pull-request: #2
 Signed-off-by: Stephan Linz <linz@li-pro.net>
+---
+ diskdefs | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
 diff --git a/diskdefs b/diskdefs
 index d080091..94694aa 100644

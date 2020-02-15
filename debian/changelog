@@ -1,3 +1,17 @@
+cpmtools (2.20+dfsg-3cpm4l1) unstable; urgency=low
+
+  * New DFSG conform upstream version.
+  * debian/copyright: Upgrade to Debian copyright format version 1.0.
+  * debian/watch: Fix Debian version mangle for uscan.
+  * debian/patches: Rebase all patches from branch 'cpm4l/cpmtools-2.20'
+    as provided by: https://github.com/lipro-cpm4l/cpmtools
+  * debian/rules: Cleaning up detritus left behind package build.
+  * debian/{control,rules,docs,doc-base,index.html}: Add doc-base for new
+    PDF and HTML documentation about the "CP/M disk and file system format".
+  * debian/{README,TODO}.Debian: Add Debian README and TODO file.
+
+ -- Stephan Linz <linz@li-pro.net>  Sat, 15 Feb 2020 11:21:03 +0100
+
 cpmtools (2.20-2cpm4l1) unstable; urgency=low
 
   * debian/control: Updated maintainer fields for CPM4L's github place.

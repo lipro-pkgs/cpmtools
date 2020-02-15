@@ -1,3 +1,46 @@
+From b7c7e358ee73601f816e5d9b3f893eba99a04627 Mon Sep 17 00:00:00 2001
+From: Stephan Linz <linz@li-pro.net>
+Date: Fri, 14 Feb 2020 19:31:05 +0100
+Subject: [PATCH] Fix man page typos that cause lintian warnings.
+
+Originated-by: man-page-typos.diff
+Originated-md5: f10ad508bdd516dfde3243ea2b9a4fe3
+Originated-URL: https://sources.debian.org/data/main/c/cpmtools/2.20-2/debian/patches/man-page-typos.diff
+
+Signed-off-by: Stephan Linz <linz@li-pro.net>
+---
+ cpm.5.in       |  2 +-
+ cpmchattr.1.in |  2 +-
+ fsck.cpm.1.in  | 20 ++++++++++----------
+ fsed.cpm.1.in  | 16 ++++++++--------
+ 4 files changed, 20 insertions(+), 20 deletions(-)
+
+diff --git a/cpm.5.in b/cpm.5.in
+index 5295621..2859bf5 100644
+--- a/cpm.5.in
++++ b/cpm.5.in
+@@ -160,7 +160,7 @@ with block 0 and files can never allocate block 0, which is why this
+ value can be given a new meaning: A block pointer of 0 marks a hole in
+ the file.  If a hole covers the range of a full extent, the extent will
+ not be allocated.  In particular, the first extent of a file does not
+-neccessarily have extent number 0.  A file may not share blocks with other
++necessarily have extent number 0.  A file may not share blocks with other
+ files, as its blocks would be freed if the other files is erased without
+ a following disk system reset.  CP/M returns EOF when it reaches a hole,
+ whereas UNIX returns zero-value bytes, which makes holes invisible.
+diff --git a/cpmchattr.1.in b/cpmchattr.1.in
+index b1690b0..468952d 100644
+--- a/cpmchattr.1.in
++++ b/cpmchattr.1.in
+@@ -52,7 +52,7 @@ then sets F1 and Read-Only.
+ .TP
+ .B m
+ Attributes after an m are unset rather than set.  The string "12m34" sets
+-atttributes F1 and F2, and unsets F3 and F4.
++attributes F1 and F2, and unsets F3 and F4.
+ .\"}}}
+ .SH "RETURN VALUE" \"{{{
+ Upon successful completion, exit code 0 is returned.
 diff --git a/fsck.cpm.1.in b/fsck.cpm.1.in
 index b27697e..a183cf8 100644
 --- a/fsck.cpm.1.in

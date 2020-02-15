@@ -1,6 +1,6 @@
-man-page-typos.diff
-diskdefs-directory.diff
-destination-directory.diff
-dont-strip-binaries.diff
-0001-a641da1-add-comments-for-robotron-scp-format-definitions.patch
-0002-0b1a3b0-add-vt-180-disk-format.patch
+0001-Fix-up-diskdefs-target-directory.patch
+0002-Support-destination-directory-setup-with-DESTDIR.patch
+0003-Do-not-strip-binaries-on-install.patch
+0004-Fix-man-page-typos-that-cause-lintian-warnings.patch
+0005-Add-comments-for-Robotron-SCP-format-definitions.patch
+0006-Add-VT-180-disk-format.patch
