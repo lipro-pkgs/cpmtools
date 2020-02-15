@@ -1,6 +1,5 @@
-cpmtools (2.20+dfsg-3cpm4l1) UNRELEASED; urgency=low
+cpmtools (2.20+dfsg-3cpm4l1) unstable; urgency=low
 
-  * UNRELEASED
   * New DFSG conform upstream version.
   * debian/copyright: Upgrade to Debian copyright format version 1.0.
   * debian/watch: Fix Debian version mangle for uscan.
@@ -11,7 +10,7 @@ cpmtools (2.20+dfsg-3cpm4l1) UNRELEASED; urgency=low
     PDF and HTML documentation about the "CP/M disk and file system format".
   * debian/{README,TODO}.Debian: Add Debian README and TODO file.
 
- --
+ -- Stephan Linz <linz@li-pro.net>  Sat, 15 Feb 2020 11:21:03 +0100
 
 cpmtools (2.20-2cpm4l1) unstable; urgency=low
 
