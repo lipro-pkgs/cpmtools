@@ -1,6 +1,10 @@
 cpmtools (2.20+dfsg-3cpm4l2) UNRELEASED; urgency=low
 
   * UNRELEASED
+  * debian/copyright: Clarify the "MIT/X Consortium License".
+    The copyright file format specification tells: "... There are many
+    versions of the MIT license. Please use Expat instead, when it
+    matches. ..."
 
  --
 
