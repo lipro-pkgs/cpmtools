@@ -9,6 +9,7 @@ cpmtools (2.20+dfsg-3cpm4l1) UNRELEASED; urgency=low
   * debian/rules: Cleaning up detritus left behind package build.
   * debian/{control,rules,docs,doc-base,index.html}: Add doc-base for new
     PDF and HTML documentation about the "CP/M disk and file system format".
+  * debian/{README,TODO}.Debian: Add Debian README and TODO file.
 
  --
 

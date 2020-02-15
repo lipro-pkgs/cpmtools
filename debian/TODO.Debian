@@ -1,0 +1,31 @@
+To Do list for Debian packaging
+###############################
+
+:Author: Stephan Linz <linz@li-pro.net>
+:Last-Updated: 2020-02-15
+
+To Do
+=====
+
+* Add support for `functional testing of Debian packages`_ with `autopkgtest`.
+
+.. _`functional testing of Debian packages`: https://ci.debian.net/doc/file.TUTORIAL.html
+
+
+Done
+====
+
+Nothing done until now.
+
+
+..
+    Local variables:
+    coding: utf-8
+    mode: text
+    mode: rst
+    time-stamp-format: "%:y-%02m-%02d"
+    time-stamp-start: "^:Last-Updated:[ 	]+"
+    time-stamp-end: "$"
+    time-stamp-line-limit: 20
+    End:
+    vim: fileencoding=utf-8 filetype=rst :

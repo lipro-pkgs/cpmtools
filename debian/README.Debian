@@ -1,0 +1,51 @@
+===================
+cpmtools for Debian
+===================
+
+:Author: Stephan Linz <linz@li-pro.net>
+:Last-Updated: 2020-02-15
+
+Packages
+========
+
+Cpmtools is set of tools to access CP/M file systems similar to the well-known
+mtools package, which accesses MSDOS file systems. I use it for file
+exchange with a Z80-PC simulator, but it works on floppy devices as well.
+
+All CP/M file system features are supported. Password protection
+is ignored, because passwords are easy to decrypt, but a pseudo file
+[passwd] contains them, if you are curious what your old password has
+been. The disk label is read as special file [label]. User numbers
+are specified as user:file.
+
+There is support for old Robotron CP/M floppies like SCP 780/800
+or SCP 624/640.
+
+There are no more hints or notes regarding this package -- not yet.
+
+Command-line programs
+=====================
+
+The Debian “cpmtools” source package provides the command-line programs
+by the following names:
+
+* list sorted directory in CP/M file systems: `/usr/bin/cpmls`.
+* copy files from and to CP/M file systems: `/usr/bin/cpmcp`.
+* erase files from CP/M file systems: `/usr/bin/cpmrm`.
+* change file permissions in CP/M file systems: `/usr/bin/cpmchmod`.
+* change file attributes in CP/M file systems: `/usr/bin/cpmchattr`.
+* make a CP/M file system: `/usr/bin/mkfs.cpm`.
+* check and repair a CP/M file system: `/usr/bin/fsck.cpm`.
+* view and edit CP/M file system: `/usr/bin/fsed.cpm`.
+
+Man pages are in section 1 under the corresponding names.  There is a special
+man page in section 5 that describe the CP/M disk and file system format.
+
+
+..
+    Local variables:
+    coding: utf-8
+    mode: text
+    mode: rst
+    End:
+    vim: fileencoding=utf-8 filetype=rst :
