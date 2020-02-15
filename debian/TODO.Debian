@@ -7,6 +7,7 @@ To Do list for Debian packaging
 To Do
 =====
 
+* Build with LibDsk, call `./configure --with-libdsk`.
 * Add support for `functional testing of Debian packages`_ with `autopkgtest`.
 
 .. _`functional testing of Debian packages`: https://ci.debian.net/doc/file.TUTORIAL.html

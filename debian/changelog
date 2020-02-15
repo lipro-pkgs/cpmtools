@@ -1,3 +1,12 @@
+cpmtools (2.20+dfsg-3cpm4l2) unstable; urgency=low
+
+  * debian/copyright: Clarify the "MIT/X Consortium License".
+    The copyright file format specification tells: "... There are many
+    versions of the MIT license. Please use Expat instead, when it
+    matches. ..."
+
+ -- Stephan Linz <linz@li-pro.net>  Sat, 15 Feb 2020 16:03:59 +0100
+
 cpmtools (2.20+dfsg-3cpm4l1) unstable; urgency=low
 
   * New DFSG conform upstream version.
