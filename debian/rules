@@ -13,6 +13,21 @@ override_dh_auto_configure:
 	cp /usr/share/misc/config.guess config.guess
 	dh_auto_configure -- --datarootdir=/etc/cpmtools
 
+override_dh_auto_build:
+	dh_auto_build
+
+	# Generate documentation
+	preconv -e UTF-8 cpm.5 | groff -te -mandoc -Tpdf > cpm-filesystem.pdf
+	preconv -e UTF-8 cpm.5 | groff -te -mandoc -Thtml > cpm-filesystem.html
+
+	# Strip metadata from PDF and HTML for reproducibility
+	exiftool -all:all= cpm-filesystem.pdf
+	mv cpm-filesystem.html cpm-filesystem.html_original && \
+		cat  cpm-filesystem.html_original | \
+		sed '/<!--.*-->/d' | \
+		sed '/<!--/,/-->/d' \
+		> cpm-filesystem.html
+
 override_dh_auto_clean:
 	dh_auto_clean
 	rm -f cpm.5
@@ -24,6 +39,14 @@ override_dh_auto_clean:
 	rm -f fsck.cpm.1
 	rm -f fsed.cpm.1
 	rm -f mkfs.cpm.1
+	rm -f cpm-filesystem.pdf
+	rm -f cpm-filesystem.pdf_original
+	rm -f cpm-filesystem.html
+	rm -f cpm-filesystem.html_original
+
+override_dh_compress:
+	# Do not compress so doc-base points to readable files
+	dh_compress -X.pdf -X.html
 
 .PHONY: get-packaged-orig-source
 get-packaged-orig-source:

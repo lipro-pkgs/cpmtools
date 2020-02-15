@@ -1,0 +1,15 @@
+Document: cpmtools
+Title: Cpmtools: Tools to access CP/M file systems
+Author: Michael Haardt <michael@moria.de>
+Abstract: Cpmtools is a collection of utilities for accessing CP/M
+ file systems similar to the well-known mtools package, which
+ accesses MSDOS file systems. All CP/M file system features are
+ supported.
+Section: System/Administration
+
+Format: HTML
+Index: /usr/share/doc/cpmtools/index.html
+Files: /usr/share/doc/cpmtools/cpm-filesystem.html
+
+Format: PDF
+Files: /usr/share/doc/cpmtools/cpm-filesystem.pdf
