@@ -1,3 +1,9 @@
+cpmtools (2.20+dfsg-3cpm4l3) UNRELEASED; urgency=low
+
+  * UNRELEASED
+
+ --
+
 cpmtools (2.20+dfsg-3cpm4l2) unstable; urgency=low
 
   * debian/copyright: Clarify the "MIT/X Consortium License".
