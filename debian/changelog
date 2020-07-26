@@ -1,3 +1,10 @@
+cpmtools (2.20+dfsg-3cpm4l3) unstable; urgency=low
+
+  * debian/patches: Add Intel MDS 8" disk formats, patch provided by
+    David Gesswein <djg@pdp8online.com>
+
+ -- Stephan Linz <linz@li-pro.net>  Sun, 26 Jul 2020 13:21:33 +0200
+
 cpmtools (2.20+dfsg-3cpm4l2) unstable; urgency=low
 
   * debian/copyright: Clarify the "MIT/X Consortium License".

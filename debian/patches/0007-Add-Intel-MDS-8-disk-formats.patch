@@ -1,0 +1,43 @@
+From 1a308e1f8bcf5325fb9aabf119e339cffb4994a9 Mon Sep 17 00:00:00 2001
+From: Stephan Linz <linz@li-pro.net>
+Date: Sun, 26 Jul 2020 13:05:47 +0200
+Subject: [PATCH] Add Intel MDS 8" disk formats
+
+Pull-request: #5
+Signed-off-by: Stephan Linz <linz@li-pro.net>
+---
+ diskdefs | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/diskdefs b/diskdefs
+index 94694aa..c66b34e 100644
+--- a/diskdefs
++++ b/diskdefs
+@@ -1426,3 +1426,27 @@ diskdef ampro800
+   boottrk 2
+   os 2.2
+ end
++
++# Intel MDS/22 8" Double Density
++diskdef mds-dd
++  seclen 128
++  tracks 77
++  sectrk 52
++  blocksize 2048
++  maxdir 128
++  skew 0
++  boottrk 2
++  os 2.2
++end
++
++# Intel MDS/22 8" Single Density. Untested.
++diskdef mds-sd
++  seclen 128
++  tracks 77
++  sectrk 26
++  blocksize 1024
++  maxdir 64
++  skew 0
++  boottrk 2
++  os 2.2
++end

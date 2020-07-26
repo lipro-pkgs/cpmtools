@@ -4,3 +4,4 @@
 0004-Fix-man-page-typos-that-cause-lintian-warnings.patch
 0005-Add-comments-for-Robotron-SCP-format-definitions.patch
 0006-Add-VT-180-disk-format.patch
+0007-Add-Intel-MDS-8-disk-formats.patch
