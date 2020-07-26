@@ -1,6 +1,7 @@
 cpmtools (2.20+dfsg-3cpm4l3) UNRELEASED; urgency=low
 
-  * UNRELEASED
+  * debian/patches: Add Intel MDS 8" disk formats, patch provided by
+    David Gesswein <djg@pdp8online.com>
 
  --
 
