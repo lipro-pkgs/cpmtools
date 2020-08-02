@@ -1,6 +1,6 @@
 cpmtools (2.20+dfsg-3cpm4l4) UNRELEASED; urgency=low
 
-  * UNRELEASED
+  * debian/{control,rules,TODO.Debian}: Build with LibDsk.
 
  --
 

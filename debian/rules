@@ -11,7 +11,7 @@ export DEB_BUILD_MAINT_OPTIONS=hardening=+all
 override_dh_auto_configure:
 	cp /usr/share/misc/config.sub config.sub
 	cp /usr/share/misc/config.guess config.guess
-	dh_auto_configure -- --datarootdir=/etc/cpmtools
+	dh_auto_configure -- --with-libdsk --datarootdir=/etc/cpmtools
 
 override_dh_auto_build:
 	dh_auto_build
