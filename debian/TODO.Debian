@@ -2,12 +2,11 @@ To Do list for Debian packaging
 ###############################
 
 :Author: Stephan Linz <linz@li-pro.net>
-:Last-Updated: 2020-02-15
+:Last-Updated: 2020-08-02
 
 To Do
 =====
 
-* Build with LibDsk, call `./configure --with-libdsk`.
 * Add support for `functional testing of Debian packages`_ with `autopkgtest`.
 
 .. _`functional testing of Debian packages`: https://ci.debian.net/doc/file.TUTORIAL.html
@@ -16,7 +15,7 @@ To Do
 Done
 ====
 
-Nothing done until now.
+* Build with LibDsk, call `./configure --with-libdsk`.
 
 
 ..

@@ -1,3 +1,9 @@
+cpmtools (2.20+dfsg-3cpm4l4) unstable; urgency=low
+
+  * debian/{control,rules,TODO.Debian}: Build with LibDsk.
+
+ -- Stephan Linz <linz@li-pro.net>  Sun, 02 Aug 2020 12:11:01 +0200
+
 cpmtools (2.20+dfsg-3cpm4l3) unstable; urgency=low
 
   * debian/patches: Add Intel MDS 8" disk formats, patch provided by
